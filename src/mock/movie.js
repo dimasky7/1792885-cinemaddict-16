@@ -13,7 +13,7 @@ const actors = [
   'Dorothy Revier',
   'Hal Skelly',
 ];
-const ages = ['0+', '6+', '13+', '16+', '18+'];
+const ages = ['0+', '6+', '14+', '16+', '18+'];
 const countries = ['USA', 'Russia', 'Spain', 'France', 'England'];
 const directors = [
   'John Cromwell',
