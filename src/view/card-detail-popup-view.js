@@ -94,7 +94,7 @@ const getInfo = (movie) => {
     </div>`;
 };
 
-export const createDetailModal = (movie, allComments) => {
+export const createCardDetailPopup = (movie, allComments) => {
   const {
     ageRating,
     poster,

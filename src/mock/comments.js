@@ -3,13 +3,13 @@ import dayjs from 'dayjs';
 
 const emojis = ['smile', 'sleeping', 'puke', 'angry'];
 const authors = [
-  'Osborn Brooks',
-  'Lexi Panossian',
-  'Simonette Walsh',
-  'Timmy Krikorian',
-  'Kimball Fairclough',
-  'Amy Pettigrew',
-  'Rocky Cook',
+  'Vasya',
+  'Leha',
+  'Petya',
+  'Anya',
+  'Klava',
+  'Lusya',
+  'Masha',
 ];
 
 const getDate = () => {

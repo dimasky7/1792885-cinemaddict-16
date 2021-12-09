@@ -59,7 +59,7 @@ let movieCount = 0;
 let commentIdCount = 0;
 
 const getRating = () => {
-  const integer = getRandomInteger(0, 10);
+  const integer = getRandomInteger(0, 9);
   const decimalPoint = getRandomInteger(0, 10);
 
   return `${integer}.${decimalPoint}`;
@@ -73,7 +73,7 @@ const getRuntime = () => {
 };
 
 const getRelease = () => {
-  const minYear = 1960;
+  const minYear = 1930;
   const maxYear = 1960;
   const minMonth = 1;
   const maxMonth = 12;
