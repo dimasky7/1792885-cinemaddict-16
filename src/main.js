@@ -1,8 +1,8 @@
 import {renderTemplate, renderElement, RenderPosition} from './render.js';
 import {createUserProfileTemplate} from './view/user-profile-view.js';
 import {createFiltersTemplate} from './view/filters-view.js';
-import {createSortTemplate} from './view/sort-view.js';
-import {createListTemplate} from './view/list-view.js';
+import SortView from './view/sort-view.js';
+import ListView from './view/list-view.js';
 import {createCardTemplate} from './view/card-view.js';
 import ShowMoreButtonView from './view/show-more-button-view.js';
 import {createStatsTemplate} from './view/stats-view.js';
@@ -31,8 +31,8 @@ const createSomeFilmCards = (count, container) => {
 
 renderTemplate(headerElement, createUserProfileTemplate(movies), RenderPosition.BEFOREEND);
 renderTemplate(mainElement, createFiltersTemplate(filters), RenderPosition.BEFOREEND);
-renderTemplate(mainElement, createSortTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(mainElement, createListTemplate(), RenderPosition.BEFOREEND);
+renderElement(mainElement, new SortView().element, RenderPosition.BEFOREEND);
+renderElement(mainElement, new ListView().element, RenderPosition.BEFOREEND);
 
 const filmElement = document.querySelector('.films');
 const filmListElement = filmElement.querySelector('.films-list');
