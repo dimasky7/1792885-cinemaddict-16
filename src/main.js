@@ -1,10 +1,10 @@
-import {renderTemplate, RenderPosition} from './render.js';
+import {renderTemplate, renderElement, RenderPosition} from './render.js';
 import {createUserProfileTemplate} from './view/user-profile-view.js';
 import {createFiltersTemplate} from './view/filters-view.js';
 import {createSortTemplate} from './view/sort-view.js';
 import {createListTemplate} from './view/list-view.js';
 import {createCardTemplate} from './view/card-view.js';
-import {createShowMoreButtonTemplate} from './view/show-more-button-view.js';
+import ShowMoreButtonView from './view/show-more-button-view.js';
 import {createStatsTemplate} from './view/stats-view.js';
 import {createCardDetailPopup} from './view/card-detail-popup-view.js';
 import {getMovie} from './mock/movie.js';
@@ -46,16 +46,18 @@ const statisticsContainerElement = footer.querySelector('.footer__statistics');
 renderTemplate(statisticsContainerElement, createStatsTemplate(movies), RenderPosition.BEFOREEND);
 
 //comment next line to check the program
-renderTemplate(footer, createCardDetailPopup(movies[START_INDEX], comments), RenderPosition.AFTEREND);
+//renderTemplate(footer, createCardDetailPopup(movies[START_INDEX], comments), RenderPosition.AFTEREND);
 
 if (movies.length > MOVIE_COUNT_PER_STEP) {
   let renderedTaskCount = MOVIE_COUNT_PER_STEP;
 
-  renderTemplate(filmListElement, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
+  //renderTemplate(filmListElement, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
+  const showMoreButtonComponent = new ShowMoreButtonView();
+  renderElement(filmListElement, showMoreButtonComponent.element, RenderPosition.BEFOREEND);
 
-  const loadMoreButton = filmListElement.querySelector('.films-list__show-more');
+  //const loadMoreButton = filmListElement.querySelector('.films-list__show-more');
 
-  loadMoreButton.addEventListener('click', (evt) => {
+  showMoreButtonComponent.element.addEventListener('click', (evt) => {
     evt.preventDefault();
     movies
       .slice(renderedTaskCount, renderedTaskCount + MOVIE_COUNT_PER_STEP)
@@ -64,7 +66,8 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
     renderedTaskCount += MOVIE_COUNT_PER_STEP;
 
     if (renderedTaskCount >= movies.length) {
-      loadMoreButton.remove();
+      showMoreButtonComponent.element.remove();
+      showMoreButtonComponent.removeElement();
     }
   });
 }
