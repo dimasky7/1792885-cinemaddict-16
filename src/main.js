@@ -6,7 +6,7 @@ import ListView from './view/list-view.js';
 import CardView from './view/card-view.js';
 import ShowMoreButtonView from './view/show-more-button-view.js';
 import StatsView from './view/stats-view.js';
-import {createCardDetailPopup} from './view/card-detail-popup-view.js';
+import PopupView from './view/card-detail-popup-view.js';
 import {getMovie} from './mock/movie.js';
 import {getComments} from './mock/comments.js';
 import {getFilters} from './mock/filters.js';
@@ -25,7 +25,18 @@ const mainElement = document.querySelector('.main');
 
 const createSomeFilmCards = (count, container) => {
   for (let i = 0; i < count; i++) {
-    renderElement(container, new CardView(movies[i]).element, RenderPosition.BEFOREEND);
+    const cardViewComponent = [];
+    cardViewComponent[i] = new CardView(movies[i]);
+    renderElement(container, cardViewComponent[i].element, RenderPosition.BEFOREEND);
+    cardViewComponent[i].link.addEventListener('click', () => {
+      const popup = new PopupView(movies[i], comments);
+      document.body.appendChild(popup.element);
+      document.body.classList.add('hide-overflow');
+      popup.closePopup.addEventListener('click', () => {
+        document.body.removeChild(popup.element);
+        document.body.classList.remove('hide-overflow');
+      });
+    });
   }
 };
 

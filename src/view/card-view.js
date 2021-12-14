@@ -82,6 +82,10 @@ export default class CardView {
     return createCardTemplate(this.#movie);
   }
 
+  get link() {
+    return this.#element.querySelector('.film-card__link');
+  }
+
   removeElement() {
     this.#element = null;
   }
