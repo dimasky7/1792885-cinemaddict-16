@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {createElement} from '../render.js';
 
 const getStringOfElements = (elements) => (elements.join(', '));
 
@@ -10,8 +11,7 @@ const getComments = (comments) => comments.map((comment) => {
   const {text, emoji, author, date} = comment;
   const formattedDate = dayjs(date).format('YYYY/MM/DD HH:mm');
 
-  return `
-    <li class="film-details__comment">
+  return `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
       </span>
@@ -47,8 +47,7 @@ const getInfo = (movie) => {
   const genresTitle = genres.length === 1 ? 'Genre' : 'Genres';
   const genresMarkup = getGenres(genres);
 
-  return `
-    <div class="film-details__info">
+  return `<div class="film-details__info">
       <div class="film-details__info-head">
         <div class="film-details__title-wrap">
           <h3 class="film-details__title">${name}</h3>
@@ -94,7 +93,7 @@ const getInfo = (movie) => {
     </div>`;
 };
 
-export const createCardDetailPopup = (movie, allComments) => {
+const createCardDetailPopup = (movie, allComments) => {
   const {
     ageRating,
     poster,
@@ -110,8 +109,7 @@ export const createCardDetailPopup = (movie, allComments) => {
     ? getComments(currentMovieComments)
     : '';
 
-  return `
-  <section class="film-details">
+  return `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">
@@ -191,3 +189,34 @@ export const createCardDetailPopup = (movie, allComments) => {
       </form>
     </section>`;
 };
+
+export default class PopupView {
+  #element = null;
+  #movie = null;
+  #allComments = null;
+
+  constructor(movie, allComments) {
+    this.#movie = movie;
+    this.#allComments = allComments;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createCardDetailPopup(this.#movie, this.#allComments);
+  }
+
+  get closePopup() {
+    return this.#element.querySelector('.film-details__close-btn');
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+
+}
