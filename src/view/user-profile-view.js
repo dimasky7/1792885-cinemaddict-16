@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view';
 
 const USER_RATING = {
   NOVICE: 'novice',
@@ -31,27 +31,16 @@ const createUserProfileTemplate = (movies) => {
       </section>`;
 };
 
-export default class UserProfile {
-  #element = null;
+export default class UserProfile extends AbstractView {
   #movies = null;
 
   constructor(movies) {
+    super();
     this.#movies = movies;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createUserProfileTemplate(this.#movies);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 
 }
