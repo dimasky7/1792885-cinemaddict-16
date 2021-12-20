@@ -1,5 +1,5 @@
 import {render, RenderPosition} from './render.js';
-import UserProfile from './view/user-profile-view.js';
+import UserProfileView from './view/user-profile-view.js';
 import FiltersView from './view/filters-view.js';
 import SortView from './view/sort-view.js';
 import ListView from './view/list-view.js';
@@ -22,7 +22,7 @@ const filters = getFilters(movies);
 const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 
-render(headerElement, new UserProfile(movies).element, RenderPosition.BEFOREEND);
+render(headerElement, new UserProfileView(movies).element, RenderPosition.BEFOREEND);
 render(mainElement, new FiltersView(filters).element, RenderPosition.BEFOREEND);
 render(mainElement, new SortView().element, RenderPosition.BEFOREEND);
 render(mainElement, new ListView().element, RenderPosition.BEFOREEND);

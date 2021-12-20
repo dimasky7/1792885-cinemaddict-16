@@ -31,7 +31,7 @@ const createUserProfileTemplate = (movies) => {
       </section>`;
 };
 
-export default class UserProfile extends AbstractView {
+export default class UserProfileView extends AbstractView {
   #movies = null;
 
   constructor(movies) {
