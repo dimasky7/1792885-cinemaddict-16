@@ -75,8 +75,14 @@ export default class CardView extends AbstractView {
     return createCardTemplate(this.#movie);
   }
 
-  get link() {
-    return this.element.querySelector('.film-card__link');
+  setOpenPopupHandler = (callback) => {
+    this._callback.openPopup = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#openPopupHandler);
+  }
+
+  #openPopupHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.openPopup();
   }
 
 }

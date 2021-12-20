@@ -45,11 +45,11 @@ const renderCards = (cardContainer, moviesArray) => {
       i++;
       cardViewComponent[i] = new CardView(movie);
       render(cardContainer, cardViewComponent[i].element, RenderPosition.BEFOREEND);
-      cardViewComponent[i].link.addEventListener('click', () => {
+      cardViewComponent[i].setOpenPopupHandler(() => {
         const popup = new PopupView(movie, comments);
         document.body.appendChild(popup.element);
         document.body.classList.add('hide-overflow');
-        popup.closePopup.addEventListener('click', () => {
+        popup.setClosePopupHandler(() => {
           document.body.removeChild(popup.element);
           document.body.classList.remove('hide-overflow');
         });
@@ -70,11 +70,11 @@ const renderCards = (cardContainer, moviesArray) => {
           i++;
           cardViewComponent[i] = new CardView(movie);
           render(cardContainer, cardViewComponent[i].element, RenderPosition.BEFOREEND);
-          cardViewComponent[i].link.addEventListener('click', () => {
+          cardViewComponent[i].setOpenPopupHandler(() => {
             const popup = new PopupView(movie, comments);
             document.body.appendChild(popup.element);
             document.body.classList.add('hide-overflow');
-            popup.closePopup.addEventListener('click', () => {
+            popup.setClosePopupHandler(() => {
               document.body.removeChild(popup.element);
               document.body.classList.remove('hide-overflow');
             });
