@@ -63,7 +63,7 @@ const renderCards = (cardContainer, moviesArray) => {
     const showMoreButtonComponent = new ShowMoreButtonView();
     render(filmListElement, showMoreButtonComponent.element, RenderPosition.BEFOREEND);
 
-    showMoreButtonComponent.element.addEventListener('click', () => {
+    showMoreButtonComponent.setClickHandler(() => {
       moviesArray
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
         .forEach((movie) => {
