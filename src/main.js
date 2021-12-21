@@ -1,5 +1,5 @@
-import {render, RenderPosition} from './render.js';
-import UserProfile from './view/user-profile-view.js';
+import {render, RenderPosition, remove} from './render.js';
+import UserProfileView from './view/user-profile-view.js';
 import FiltersView from './view/filters-view.js';
 import SortView from './view/sort-view.js';
 import ListView from './view/list-view.js';
@@ -22,10 +22,10 @@ const filters = getFilters(movies);
 const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 
-render(headerElement, new UserProfile(movies).element, RenderPosition.BEFOREEND);
-render(mainElement, new FiltersView(filters).element, RenderPosition.BEFOREEND);
-render(mainElement, new SortView().element, RenderPosition.BEFOREEND);
-render(mainElement, new ListView().element, RenderPosition.BEFOREEND);
+render(headerElement, new UserProfileView(movies), RenderPosition.BEFOREEND);
+render(mainElement, new FiltersView(filters), RenderPosition.BEFOREEND);
+render(mainElement, new SortView(), RenderPosition.BEFOREEND);
+render(mainElement, new ListView(), RenderPosition.BEFOREEND);
 
 const filmElement = document.querySelector('.films');
 const filmListElement = filmElement.querySelector('.films-list');
@@ -33,7 +33,7 @@ const filmContainerElement = filmListElement.querySelector('.films-list__contain
 
 const footer = document.querySelector('.footer');
 const statisticsContainerElement = footer.querySelector('.footer__statistics');
-render(statisticsContainerElement, new StatsView(movies).element, RenderPosition.BEFOREEND);
+render(statisticsContainerElement, new StatsView(movies), RenderPosition.BEFOREEND);
 
 
 const renderCards = (cardContainer, moviesArray) => {
@@ -44,12 +44,12 @@ const renderCards = (cardContainer, moviesArray) => {
     .forEach((movie) => {
       i++;
       cardViewComponent[i] = new CardView(movie);
-      render(cardContainer, cardViewComponent[i].element, RenderPosition.BEFOREEND);
-      cardViewComponent[i].link.addEventListener('click', () => {
+      render(cardContainer, cardViewComponent[i], RenderPosition.BEFOREEND);
+      cardViewComponent[i].setOpenPopupHandler(() => {
         const popup = new PopupView(movie, comments);
         document.body.appendChild(popup.element);
         document.body.classList.add('hide-overflow');
-        popup.closePopup.addEventListener('click', () => {
+        popup.setClosePopupHandler(() => {
           document.body.removeChild(popup.element);
           document.body.classList.remove('hide-overflow');
         });
@@ -61,20 +61,20 @@ const renderCards = (cardContainer, moviesArray) => {
     let renderedMovieCount = MOVIE_COUNT_PER_STEP;
 
     const showMoreButtonComponent = new ShowMoreButtonView();
-    render(filmListElement, showMoreButtonComponent.element, RenderPosition.BEFOREEND);
+    render(filmListElement, showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    showMoreButtonComponent.element.addEventListener('click', () => {
+    showMoreButtonComponent.setClickHandler(() => {
       moviesArray
         .slice(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP)
         .forEach((movie) => {
           i++;
           cardViewComponent[i] = new CardView(movie);
-          render(cardContainer, cardViewComponent[i].element, RenderPosition.BEFOREEND);
-          cardViewComponent[i].link.addEventListener('click', () => {
+          render(cardContainer, cardViewComponent[i], RenderPosition.BEFOREEND);
+          cardViewComponent[i].setOpenPopupHandler(() => {
             const popup = new PopupView(movie, comments);
             document.body.appendChild(popup.element);
             document.body.classList.add('hide-overflow');
-            popup.closePopup.addEventListener('click', () => {
+            popup.setClosePopupHandler(() => {
               document.body.removeChild(popup.element);
               document.body.classList.remove('hide-overflow');
             });
@@ -84,8 +84,7 @@ const renderCards = (cardContainer, moviesArray) => {
       renderedMovieCount += MOVIE_COUNT_PER_STEP;
 
       if (renderedMovieCount >= movies.length) {
-        showMoreButtonComponent.element.remove();
-        showMoreButtonComponent.removeElement();
+        remove(showMoreButtonComponent);
       }
     });
   }

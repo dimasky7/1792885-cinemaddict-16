@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const getStringOfElements = (elements) => (elements.join(', '));
 
@@ -190,33 +190,28 @@ const createCardDetailPopup = (movie, allComments) => {
     </section>`;
 };
 
-export default class PopupView {
-  #element = null;
+export default class PopupView extends AbstractView {
   #movie = null;
   #allComments = null;
 
   constructor(movie, allComments) {
+    super();
     this.#movie = movie;
     this.#allComments = allComments;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createCardDetailPopup(this.#movie, this.#allComments);
   }
 
-  get closePopup() {
-    return this.#element.querySelector('.film-details__close-btn');
+  setClosePopupHandler = (callback) => {
+    this._callback.closePopup = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closePopupHandler);
   }
 
-  removeElement() {
-    this.#element = null;
+  #closePopupHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closePopup();
   }
 
 }

@@ -1,5 +1,5 @@
 import {START_INDEX} from '../const';
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view';
 
 const getCommentLength = (comments) => {
   const length = comments.length;
@@ -63,31 +63,26 @@ const createCardTemplate = (movie) => {
     </article>`;
 };
 
-export default class CardView {
-  #element = null;
+export default class CardView extends AbstractView {
   #movie = null;
 
   constructor(movie) {
+    super();
     this.#movie = movie;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createCardTemplate(this.#movie);
   }
 
-  get link() {
-    return this.#element.querySelector('.film-card__link');
+  setOpenPopupHandler = (callback) => {
+    this._callback.openPopup = callback;
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#openPopupHandler);
   }
 
-  removeElement() {
-    this.#element = null;
+  #openPopupHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.openPopup();
   }
 
 }
