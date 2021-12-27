@@ -7,16 +7,9 @@ import CardView from '../view/card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import StatsView from '../view/stats-view.js';
 import PopupView from '../view/card-detail-popup-view.js';
-import AbstractView from '../view/abstract-view.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
-const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
-//const filmElement = document.querySelector('.films');
-//const filmListElement = filmElement.querySelector('.films-list');
-//const filmContainerElement = filmListElement.querySelector('.films-list__container');
-//const footer = document.querySelector('.footer');
-//const statisticsContainerElement = footer.querySelector('.footer__statistics');
 
 export default class MovieListPresenter {
 #sortComponent = new SortView();
@@ -38,11 +31,12 @@ init = () => {
   this.#renderFilters();
   this.#renderSort();
   this.#renderCards();
-
+  this.#renderStats();
 }
 
 
 #renderUserProfile = () => {
+  const headerElement = document.querySelector('.header');
   render(headerElement, new UserProfileView(this.#movies), RenderPosition.BEFOREEND);
 }
 
@@ -72,7 +66,9 @@ init = () => {
         this.#cardViewComponent[i] = new CardView(movie);
         render(filmContainerElement, this.#cardViewComponent[i], RenderPosition.BEFOREEND);
         this.#cardViewComponent[i].setOpenPopupHandler(() => {
+          if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
           const popup = new PopupView(movie, this.#comments);
+          popup.element.setAttribute('data-popup', '');
           document.body.appendChild(popup.element);
           document.body.classList.add('hide-overflow');
           popup.setClosePopupHandler(() => {
@@ -103,7 +99,9 @@ init = () => {
 }
 
 #renderStats = () => {
-
+  const footer = document.querySelector('.footer');
+  const statisticsContainerElement = footer.querySelector('.footer__statistics');
+  render(statisticsContainerElement, new StatsView(this.#movies), RenderPosition.BEFOREEND);
 }
 
 }
