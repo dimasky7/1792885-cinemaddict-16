@@ -66,13 +66,15 @@ init = () => {
         this.#cardViewComponent[i] = new CardView(movie);
         render(filmContainerElement, this.#cardViewComponent[i], RenderPosition.BEFOREEND);
         this.#cardViewComponent[i].setOpenPopupHandler(() => {
-          if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
+          //if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
+          PopupView.closeAllPopups();
           const popup = new PopupView(movie, this.#comments);
           popup.element.setAttribute('data-popup', '');
           document.body.appendChild(popup.element);
           document.body.classList.add('hide-overflow');
           popup.setClosePopupHandler(() => {
-            document.body.removeChild(popup.element);
+            //document.body.removeChild(popup.element);
+            PopupView.closeAllPopups();
             document.body.classList.remove('hide-overflow');
           });
         });

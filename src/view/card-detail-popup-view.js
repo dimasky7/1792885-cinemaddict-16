@@ -214,4 +214,15 @@ export default class PopupView extends AbstractView {
     this._callback.closePopup();
   }
 
+  static openPopups = [...this.element];
+
+  static closeAllPopups = () => {
+    this.openPopups.forEach((popup) => {
+      document.body.removeChild(popup.element);
+    });
+  }
+
+
 }
+
+
