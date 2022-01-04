@@ -66,6 +66,9 @@ init = () => {
 }
 
 #handleSortTypeChange = (sortType) => {
+  if (this.#currentSortType === sortType) {
+    return;
+  }
   this.#sortMovies(sortType);
   this.#clearMovieList();
   this.#renderCards();
