@@ -7,6 +7,8 @@ import CardView from '../view/card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import StatsView from '../view/stats-view.js';
 import PopupView from '../view/card-detail-popup-view.js';
+import { SortType } from '../const.js';
+import { sortByDate, sortByRating } from '../utils.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const mainElement = document.querySelector('.main');
@@ -15,13 +17,17 @@ export default class MovieListPresenter {
 #sortComponent = new SortView();
 #listComponent = new ListView();
 #showMoreButtonComponent = new ShowMoreButtonView();
+#popupComponent = null;
 #movies = [];
+#sourcedMovies = [];
+#currentSortType = SortType.DEFAULT;
 #comments = [];
 #filters = [];
 #cardViewComponent = [];
 
 constructor(movies, comments, filters) {
   this.#movies = [...movies];
+  this.#sourcedMovies = [...movies];
   this.#comments = [...comments];
   this.#filters = [...filters];
 }
@@ -44,8 +50,30 @@ init = () => {
   render(mainElement, new FiltersView(this.#filters), RenderPosition.BEFOREEND);
 }
 
+#sortMovies = (sortType) => {
+  switch (sortType) {
+    case SortType.DATE:
+      this.#movies.sort(sortByDate);
+      break;
+    case SortType.RATING:
+      this.#movies.sort(sortByRating);
+      break;
+    default:
+      this.#movies = [...this.#sourcedMovies];
+  }
+
+  this.#currentSortType = sortType;
+}
+
+#handleSortTypeChange = (sortType) => {
+  this.#sortMovies(sortType);
+  this.#clearMovieList();
+  this.#renderCards();
+}
+
 #renderSort = () => {
   render(mainElement, this.#sortComponent, RenderPosition.BEFOREEND);
+  this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
 }
 
 #renderList = () => {
@@ -66,15 +94,13 @@ init = () => {
         this.#cardViewComponent[i] = new CardView(movie);
         render(filmContainerElement, this.#cardViewComponent[i], RenderPosition.BEFOREEND);
         this.#cardViewComponent[i].setOpenPopupHandler(() => {
-          //if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
-          PopupView.closeAllPopups();
-          const popup = new PopupView(movie, this.#comments);
-          popup.element.setAttribute('data-popup', '');
-          document.body.appendChild(popup.element);
+          if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
+          this.#popupComponent = new PopupView(movie, this.#comments);
+          this.#popupComponent.element.setAttribute('data-popup', '');
+          document.body.appendChild(this.#popupComponent.element);
           document.body.classList.add('hide-overflow');
-          popup.setClosePopupHandler(() => {
-            //document.body.removeChild(popup.element);
-            PopupView.closeAllPopups();
+          this.#popupComponent.setClosePopupHandler(() => {
+            remove(this.#popupComponent);
             document.body.classList.remove('hide-overflow');
           });
         });
@@ -97,6 +123,17 @@ init = () => {
 #renderShowMoreButton = (buttonContainer) => {
   if (this.#movies.length > MOVIE_COUNT_PER_STEP) {
     render(buttonContainer, this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
+  }
+}
+
+#clearMovieList = () => {
+  this.#cardViewComponent.forEach((cardView) => {
+    remove(cardView);
+  });
+  remove(this.#showMoreButtonComponent);
+  remove(this.#popupComponent);
+  if (document.body.classList.contains('hide-overflow')) {
+    document.body.classList.remove('hide-overflow');
   }
 }
 

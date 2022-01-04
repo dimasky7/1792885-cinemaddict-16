@@ -13,3 +13,9 @@ export const RANDOM_STRINGS = [
 ];
 
 export const START_INDEX = 0;
+
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
