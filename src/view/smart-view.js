@@ -26,7 +26,7 @@ export default class SmartView extends AbstractView {
 
       parent.replaceChild(newElement, prevElement);
 
-     // this.restoreHandlers();
+      this.restoreHandlers();
 
     }
 
