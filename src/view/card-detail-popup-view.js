@@ -198,6 +198,7 @@ export default class PopupView extends AbstractView {
     super();
     this.#movie = movie;
     this.#allComments = allComments;
+    this.#setInnerHandlers();
   }
 
   get template() {
@@ -216,11 +217,27 @@ export default class PopupView extends AbstractView {
   }
 
   #closePopupHandlerEsc = (evt) => {
-    evt.preventDefault();
+   // evt.preventDefault();
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._callback.closePopup();
     }
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+  }
+
+  #setInnerHandlers = () => {
+    const emojies = this.element.querySelectorAll('.film-details__emoji-item');
+    for (const emoji of emojies) {
+      emoji.addEventListener('change', this.#emojiSelectionHandler);
+    }
+  }
+
+  #emojiSelectionHandler = (evt) => {
+    this.element.querySelector('.film-details__add-emoji-label')
+      .insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
   }
 
 }
