@@ -217,7 +217,7 @@ export default class PopupView extends AbstractView {
   }
 
   #closePopupHandlerEsc = (evt) => {
-   // evt.preventDefault();
+    // evt.preventDefault();
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._callback.closePopup();
