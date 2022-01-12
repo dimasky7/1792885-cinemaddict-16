@@ -101,6 +101,10 @@ init = () => {
           this.#popupComponent = new PopupView(movie, this.#comments);
           this.#popupComponent.element.setAttribute('data-popup', '');
           document.body.appendChild(this.#popupComponent.element);
+          this.#popupComponent.setFormSubmitHandler(() => {
+            this.element.querySelector('.film-details__comments-list')
+              .appendChild(this.element.querySelector('.film-details__add-emoji-label'));
+          });
           document.body.classList.add('hide-overflow');
           this.#popupComponent.setClosePopupHandler(() => {
             remove(this.#popupComponent);

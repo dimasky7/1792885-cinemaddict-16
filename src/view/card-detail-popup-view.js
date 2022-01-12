@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract-view.js';
+import SmartView from './smart-view.js';
 
 const getStringOfElements = (elements) => (elements.join(', '));
 
@@ -190,7 +190,7 @@ const createCardDetailPopup = (movie, allComments) => {
     </section>`;
 };
 
-export default class PopupView extends AbstractView {
+export default class PopupView extends SmartView {
   #movie = null;
   #allComments = null;
 
@@ -217,7 +217,6 @@ export default class PopupView extends AbstractView {
   }
 
   #closePopupHandlerEsc = (evt) => {
-    // evt.preventDefault();
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._callback.closePopup();
@@ -236,8 +235,26 @@ export default class PopupView extends AbstractView {
   }
 
   #emojiSelectionHandler = (evt) => {
-    this.element.querySelector('.film-details__add-emoji-label')
-      .insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
+    const addEmojiLabel = this.element.querySelector('.film-details__add-emoji-label');
+    if (!addEmojiLabel.children[0]) {
+      addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
+    } else {
+      addEmojiLabel.removeChild(addEmojiLabel.children[0]);
+      addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
+    }
+  }
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    document.addEventListener('keydown', this.#formSubmitHandler);
+    //this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  #formSubmitHandler = (evt) => {
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
+      evt.preventDefault();
+      this._callback.formSubmit();
+    }
   }
 
 }
