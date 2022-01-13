@@ -101,6 +101,16 @@ init = () => {
           this.#popupComponent = new PopupView(movie, this.#comments);
           this.#popupComponent.element.setAttribute('data-popup', '');
           document.body.appendChild(this.#popupComponent.element);
+          this.#popupComponent.setFormSubmitHandler(() => {
+            const newComment = document.createElement('li');
+            newComment.classList.add('film-details__comment');
+            newComment.appendChild(this.#popupComponent.element.querySelector('.film-details__add-emoji-label'));
+            const newText = document.createElement('p');
+            newText.textContent = this.#popupComponent.element.querySelector('.film-details__comment-input').value;
+            newText.classList.add('film-details__comment-text');
+            newComment.appendChild(newText);
+            this.#popupComponent.element.querySelector('.film-details__comments-list').appendChild(newComment);
+          });
           document.body.classList.add('hide-overflow');
           this.#popupComponent.setClosePopupHandler(() => {
             remove(this.#popupComponent);

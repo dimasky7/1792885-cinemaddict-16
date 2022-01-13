@@ -60,7 +60,7 @@ let commentIdCount = 0;
 
 const getRating = () => {
   const integer = getRandomInteger(0, 9);
-  const decimalPoint = getRandomInteger(0, 10);
+  const decimalPoint = getRandomInteger(0, 9);
 
   return `${integer}.${decimalPoint}`;
 };
