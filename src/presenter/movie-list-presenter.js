@@ -104,7 +104,9 @@ init = () => {
           this.#popupComponent.setFormSubmitHandler(() => {
             const newComment = document.createElement('li');
             newComment.classList.add('film-details__comment');
-            newComment.appendChild(this.#popupComponent.element.querySelector('.film-details__add-emoji-label'));
+            const emojiCopy = this.#popupComponent.element.querySelector('.film-details__add-emoji-label').cloneNode(true);
+            emojiCopy.classList.remove('film-details__add-emoji-label');
+            newComment.appendChild(emojiCopy);
             const newText = document.createElement('p');
             newText.textContent = this.#popupComponent.element.querySelector('.film-details__comment-input').value;
             newText.classList.add('film-details__comment-text');

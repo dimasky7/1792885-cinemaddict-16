@@ -236,12 +236,10 @@ export default class PopupView extends SmartView {
 
   #emojiSelectionHandler = (evt) => {
     const addEmojiLabel = this.element.querySelector('.film-details__add-emoji-label');
-    if (!addEmojiLabel.children[0]) {
-      addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
-    } else {
+    if (addEmojiLabel.children[0]) {
       addEmojiLabel.removeChild(addEmojiLabel.children[0]);
-      addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
     }
+    addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
   }
 
   setFormSubmitHandler = (callback) => {
