@@ -2,6 +2,7 @@ import MovieListPresenter from './presenter/movie-list-presenter.js';
 import {getMovie} from './mock/movie.js';
 import {getComments} from './mock/comments.js';
 import {getFilters} from './mock/filters.js';
+import MoviesModel from './model/movies-model.js';
 
 const CARD_IN_LIST_COUNT = 23;
 
@@ -12,5 +13,7 @@ const comments = getComments(commentsIds);
 //console.log(comments);
 const filters = getFilters(movies);
 
-const Presenter = new MovieListPresenter(movies, comments, filters);
+const moviesModel = new MoviesModel();
+moviesModel.movies = movies;
+const Presenter = new MovieListPresenter(movies, comments, filters, moviesModel);
 Presenter.init();

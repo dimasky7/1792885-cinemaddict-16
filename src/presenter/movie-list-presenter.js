@@ -18,6 +18,7 @@ export default class MovieListPresenter {
 #listComponent = new ListView();
 #showMoreButtonComponent = new ShowMoreButtonView();
 #popupComponent = null;
+#moviesModel = null;
 #movies = [];
 #sourcedMovies = [];
 #currentSortType = SortType.DEFAULT;
@@ -25,11 +26,23 @@ export default class MovieListPresenter {
 #filters = [];
 #cardViewComponent = [];
 
-constructor(movies, comments, filters) {
+constructor(movies, comments, filters, moviesModel) {
   this.#movies = [...movies];
   this.#sourcedMovies = [...movies];
   this.#comments = [...comments];
   this.#filters = [...filters];
+  this.#moviesModel = moviesModel;
+}
+
+get movies() {
+  switch (this.#currentSortType) {
+    case SortType.DATE_UP:
+      return [...this.#moviesModel.movies].sort(sortByDate);
+    case SortType.DATE_DOWN:
+      return [...this.#moviesModel.movies].sort(sortByRating);
+  }
+
+  return this.moviesModel.movies;
 }
 
 init = () => {
@@ -69,7 +82,7 @@ init = () => {
   if (this.#currentSortType === sortType) {
     return;
   }
-  this.#sortMovies(sortType);
+  this.#currentSortType = sortType;
   this.#clearMovieList();
   this.#renderCards();
 }
