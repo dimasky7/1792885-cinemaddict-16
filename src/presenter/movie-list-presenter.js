@@ -49,6 +49,7 @@ init = () => {
   this.#renderUserProfile();
   this.#renderFilters();
   this.#renderSort();
+  this.#renderList();
   this.#renderCards();
   this.#renderStats();
 }
@@ -82,6 +83,8 @@ init = () => {
   if (this.#currentSortType === sortType) {
     return;
   }
+
+  this.#sortMovies(sortType);
   this.#currentSortType = sortType;
   this.#clearMovieList();
   this.#renderCards();
@@ -97,7 +100,6 @@ init = () => {
 }
 
 #renderCards = () => {
-  this.#renderList();
   const filmElement = document.querySelector('.films');
   const filmListElement = filmElement.querySelector('.films-list');
   const filmContainerElement = filmListElement.querySelector('.films-list__container');
