@@ -19,16 +19,16 @@ export default class MovieListPresenter {
 #showMoreButtonComponent = new ShowMoreButtonView();
 #popupComponent = null;
 #moviesModel = null;
-#movies = [];
-#sourcedMovies = [];
+//#movies = [];
+//#sourcedMovies = [];
 #currentSortType = SortType.DEFAULT;
 #comments = [];
 #filters = [];
 #cardViewComponent = [];
 
-constructor(movies, comments, filters, moviesModel) {
-  this.#movies = [...movies];
-  this.#sourcedMovies = [...movies];
+constructor(filters, moviesModel) {
+  //this.#movies = [...movies];
+  //this.#sourcedMovies = [...movies];
   this.#comments = [...comments];
   this.#filters = [...filters];
   this.#moviesModel = moviesModel;
@@ -63,7 +63,7 @@ init = () => {
 #renderFilters = () => {
   render(mainElement, new FiltersView(this.#filters), RenderPosition.BEFOREEND);
 }
-
+/*
 #sortMovies = (sortType) => {
   switch (sortType) {
     case SortType.DATE:
@@ -78,13 +78,13 @@ init = () => {
 
   this.#currentSortType = sortType;
 }
-
+*/
 #handleSortTypeChange = (sortType) => {
   if (this.#currentSortType === sortType) {
     return;
   }
 
-  this.#sortMovies(sortType);
+  //this.#sortMovies(sortType);
   this.#currentSortType = sortType;
   this.#clearMovieList();
   this.#renderCards();
@@ -99,15 +99,13 @@ init = () => {
   render(mainElement, this.#listComponent, RenderPosition.BEFOREEND);
 }
 
-#renderCards = () => {
+#renderCards = (movies) => {
   const filmElement = document.querySelector('.films');
   const filmListElement = filmElement.querySelector('.films-list');
   const filmContainerElement = filmListElement.querySelector('.films-list__container');
   let i = -1;
-  const drawMoviesCards = (from, to) => {
-    this.#movies
-      .slice(from, to)
-      .forEach((movie) => {
+  const drawMoviesCards = () => {
+    movies.forEach((movie) => {
         i++;
         this.#cardViewComponent[i] = new CardView(movie);
         render(filmContainerElement, this.#cardViewComponent[i], RenderPosition.BEFOREEND);
@@ -136,6 +134,8 @@ init = () => {
         });
       });
   };
+  const movieCount = this.movies.length;
+  const firstMovies = this.movies.slice(0, Math.min(movieCount, MOVIE_COUNT_PER_STEP));
   drawMoviesCards(0, Math.min(this.#movies.length, MOVIE_COUNT_PER_STEP));
   this.#renderShowMoreButton(filmListElement);
   let renderedMovieCount = MOVIE_COUNT_PER_STEP;
