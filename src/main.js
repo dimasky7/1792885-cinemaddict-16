@@ -15,5 +15,6 @@ const filters = getFilters(movies);
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
-const Presenter = new MovieListPresenter(movies, comments, filters, moviesModel);
+
+const Presenter = new MovieListPresenter(moviesModel, comments, filters);
 Presenter.init();

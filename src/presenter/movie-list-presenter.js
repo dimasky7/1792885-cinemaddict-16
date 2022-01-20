@@ -19,6 +19,7 @@ export default class MovieListPresenter {
 #showMoreButtonComponent = new ShowMoreButtonView();
 #popupComponent = null;
 #moviesModel = null;
+#renderedMovieCount = MOVIE_COUNT_PER_STEP;
 //#movies = [];
 //#sourcedMovies = [];
 #currentSortType = SortType.DEFAULT;
@@ -26,23 +27,23 @@ export default class MovieListPresenter {
 #filters = [];
 #cardViewComponent = [];
 
-constructor(filters, moviesModel) {
+constructor(moviesModel, comments, filters) {
   //this.#movies = [...movies];
   //this.#sourcedMovies = [...movies];
+  this.#moviesModel = moviesModel;
   this.#comments = [...comments];
   this.#filters = [...filters];
-  this.#moviesModel = moviesModel;
 }
 
 get movies() {
   switch (this.#currentSortType) {
-    case SortType.DATE_UP:
+    case SortType.DATE:
       return [...this.#moviesModel.movies].sort(sortByDate);
-    case SortType.DATE_DOWN:
+    case SortType.RATING:
       return [...this.#moviesModel.movies].sort(sortByRating);
   }
 
-  return this.moviesModel.movies;
+  return this.#moviesModel.movies;
 }
 
 init = () => {
@@ -50,44 +51,29 @@ init = () => {
   this.#renderFilters();
   this.#renderSort();
   this.#renderList();
-  this.#renderCards();
+  this.#renderMovieList();
   this.#renderStats();
 }
 
 
 #renderUserProfile = () => {
   const headerElement = document.querySelector('.header');
-  render(headerElement, new UserProfileView(this.#movies), RenderPosition.BEFOREEND);
+  render(headerElement, new UserProfileView(this.movies), RenderPosition.BEFOREEND);
 }
 
 #renderFilters = () => {
   render(mainElement, new FiltersView(this.#filters), RenderPosition.BEFOREEND);
 }
-/*
-#sortMovies = (sortType) => {
-  switch (sortType) {
-    case SortType.DATE:
-      this.#movies.sort(sortByDate);
-      break;
-    case SortType.RATING:
-      this.#movies.sort(sortByRating);
-      break;
-    default:
-      this.#movies = [...this.#sourcedMovies];
-  }
 
-  this.#currentSortType = sortType;
-}
-*/
 #handleSortTypeChange = (sortType) => {
+
   if (this.#currentSortType === sortType) {
     return;
   }
 
-  //this.#sortMovies(sortType);
   this.#currentSortType = sortType;
   this.#clearMovieList();
-  this.#renderCards();
+  this.#renderMovieList();
 }
 
 #renderSort = () => {
@@ -99,60 +85,65 @@ init = () => {
   render(mainElement, this.#listComponent, RenderPosition.BEFOREEND);
 }
 
-#renderCards = (movies) => {
+#renderCards = (movies, counter) => {
   const filmElement = document.querySelector('.films');
   const filmListElement = filmElement.querySelector('.films-list');
   const filmContainerElement = filmListElement.querySelector('.films-list__container');
-  let i = -1;
-  const drawMoviesCards = () => {
-    movies.forEach((movie) => {
-        i++;
-        this.#cardViewComponent[i] = new CardView(movie);
-        render(filmContainerElement, this.#cardViewComponent[i], RenderPosition.BEFOREEND);
-        this.#cardViewComponent[i].setOpenPopupHandler(() => {
-          if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
-          this.#popupComponent = new PopupView(movie, this.#comments);
-          this.#popupComponent.element.setAttribute('data-popup', '');
-          document.body.appendChild(this.#popupComponent.element);
-          this.#popupComponent.setFormSubmitHandler(() => {
-            const newComment = document.createElement('li');
-            newComment.classList.add('film-details__comment');
-            const emojiCopy = this.#popupComponent.element.querySelector('.film-details__add-emoji-label').cloneNode(true);
-            emojiCopy.classList.remove('film-details__add-emoji-label');
-            newComment.appendChild(emojiCopy);
-            const newText = document.createElement('p');
-            newText.textContent = this.#popupComponent.element.querySelector('.film-details__comment-input').value;
-            newText.classList.add('film-details__comment-text');
-            newComment.appendChild(newText);
-            this.#popupComponent.element.querySelector('.film-details__comments-list').appendChild(newComment);
-          });
-          document.body.classList.add('hide-overflow');
-          this.#popupComponent.setClosePopupHandler(() => {
-            remove(this.#popupComponent);
-            document.body.classList.remove('hide-overflow');
-          });
-        });
+  movies.forEach((movie) => {
+    this.#cardViewComponent[counter] = new CardView(movie);
+    render(filmContainerElement, this.#cardViewComponent[counter], RenderPosition.BEFOREEND);
+    this.#cardViewComponent[counter].setOpenPopupHandler(() => {
+      if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
+      this.#popupComponent = new PopupView(movie, this.#comments);
+      this.#popupComponent.element.setAttribute('data-popup', '');
+      document.body.appendChild(this.#popupComponent.element);
+      this.#popupComponent.setFormSubmitHandler(() => {
+        const newComment = document.createElement('li');
+        newComment.classList.add('film-details__comment');
+        const emojiCopy = this.#popupComponent.element.querySelector('.film-details__add-emoji-label').cloneNode(true);
+        emojiCopy.classList.remove('film-details__add-emoji-label');
+        newComment.appendChild(emojiCopy);
+        const newText = document.createElement('p');
+        newText.textContent = this.#popupComponent.element.querySelector('.film-details__comment-input').value;
+        newText.classList.add('film-details__comment-text');
+        newComment.appendChild(newText);
+        this.#popupComponent.element.querySelector('.film-details__comments-list').appendChild(newComment);
       });
-  };
-  const movieCount = this.movies.length;
-  const firstMovies = this.movies.slice(0, Math.min(movieCount, MOVIE_COUNT_PER_STEP));
-  drawMoviesCards(0, Math.min(this.#movies.length, MOVIE_COUNT_PER_STEP));
-  this.#renderShowMoreButton(filmListElement);
-  let renderedMovieCount = MOVIE_COUNT_PER_STEP;
-  this.#showMoreButtonComponent.setClickHandler(() => {
-    drawMoviesCards(renderedMovieCount, renderedMovieCount + MOVIE_COUNT_PER_STEP);
-    renderedMovieCount += MOVIE_COUNT_PER_STEP;
-
-    if (renderedMovieCount >= this.#movies.length) {
-      remove(this.#showMoreButtonComponent);
-    }
+      document.body.classList.add('hide-overflow');
+      this.#popupComponent.setClosePopupHandler(() => {
+        remove(this.#popupComponent);
+        document.body.classList.remove('hide-overflow');
+      });
+    });
+    counter++;
   });
-
 }
 
-#renderShowMoreButton = (buttonContainer) => {
-  if (this.#movies.length > MOVIE_COUNT_PER_STEP) {
-    render(buttonContainer, this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
+#renderMovieList = () => {
+  const movieCount = this.movies.length;
+  const firstRenderedMovies = this.movies.slice(0, Math.min(movieCount, MOVIE_COUNT_PER_STEP));
+  this.#renderCards(firstRenderedMovies, 0);
+  if (movieCount > MOVIE_COUNT_PER_STEP) {
+    this.#renderShowMoreButton();
+  }
+}
+
+#renderShowMoreButton = () => {
+  const filmListElement = document.querySelector('.films-list');
+  render(filmListElement, this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
+  this.#showMoreButtonComponent.setClickHandler(this.#handleShowMoreButtonClick);
+}
+
+#handleShowMoreButtonClick = () => {
+  const movieCount = this.movies.length;
+  const newRenderedMovieCount = Math.min(movieCount, this.#renderedMovieCount + MOVIE_COUNT_PER_STEP);
+  const movies = this.movies.slice(this.#renderedMovieCount, newRenderedMovieCount);
+
+  this.#renderCards(movies, this.#renderedMovieCount);
+  this.#renderedMovieCount = newRenderedMovieCount;
+
+  if (this.#renderedMovieCount >= movieCount) {
+    remove(this.#showMoreButtonComponent);
   }
 }
 
@@ -162,6 +153,8 @@ init = () => {
   });
   remove(this.#showMoreButtonComponent);
   remove(this.#popupComponent);
+  this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
+  this.#cardViewComponent = [];
   if (document.body.classList.contains('hide-overflow')) {
     document.body.classList.remove('hide-overflow');
   }
@@ -170,7 +163,7 @@ init = () => {
 #renderStats = () => {
   const footer = document.querySelector('.footer');
   const statisticsContainerElement = footer.querySelector('.footer__statistics');
-  render(statisticsContainerElement, new StatsView(this.#movies), RenderPosition.BEFOREEND);
+  render(statisticsContainerElement, new StatsView(this.movies), RenderPosition.BEFOREEND);
 }
 
 }
