@@ -33,6 +33,7 @@ constructor(moviesModel, comments, filters) {
   this.#moviesModel = moviesModel;
   this.#comments = [...comments];
   this.#filters = [...filters];
+  this.#moviesModel.addObserver(this.#handleModelEvent);
 }
 
 get movies() {
@@ -44,6 +45,21 @@ get movies() {
   }
 
   return this.#moviesModel.movies;
+}
+
+#handleViewAction = (updateType, update) => {
+  console.log(updateType, update);
+  // Здесь будем вызывать обновление модели.
+  // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+  // update - обновленные данные
+}
+
+#handleModelEvent = (updateType, data) => {
+  console.log(updateType, data);
+  // В зависимости от типа изменений решаем, что делать:
+  // - обновить часть списка (например, когда поменялось описание)
+  // - обновить список (например, когда задача ушла в архив)
+  // - обновить всю доску (например, при переключении фильтра)
 }
 
 init = () => {
@@ -164,6 +180,13 @@ init = () => {
   const footer = document.querySelector('.footer');
   const statisticsContainerElement = footer.querySelector('.footer__statistics');
   render(statisticsContainerElement, new StatsView(this.movies), RenderPosition.BEFOREEND);
+}
+
+#handleFavoriteClick = () => {
+  this.#changeData(
+    UpdateType.MINOR,
+    {...this.#task, isFavorite: !this.#task.isFavorite},
+  );
 }
 
 }

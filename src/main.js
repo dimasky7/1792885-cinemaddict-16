@@ -7,11 +7,13 @@ import MoviesModel from './model/movies-model.js';
 const CARD_IN_LIST_COUNT = 23;
 
 const movies = Array.from({length: CARD_IN_LIST_COUNT}, getMovie);
+//console.log(movies);
 const commentsIds = [].concat(...movies.map((movie) => (movie.commentsIds)));
 //console.log(commentsIds);
 const comments = getComments(commentsIds);
-//console.log(comments);
+console.log(comments);
 const filters = getFilters(movies);
+//console.log(filters);
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
