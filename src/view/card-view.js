@@ -85,4 +85,13 @@ export default class CardView extends AbstractView {
     this._callback.openPopup();
   }
 
+  setAddToFavoritesHandler = (callback) => {
+    this._callback.addToFavorites = callback;
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#addToFavoritesHandler);
+  }
+
+  #addToFavoritesHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToFavorites();
+  }
 }

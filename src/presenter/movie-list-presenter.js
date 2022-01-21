@@ -9,6 +9,7 @@ import StatsView from '../view/stats-view.js';
 import PopupView from '../view/card-detail-popup-view.js';
 import { SortType } from '../const.js';
 import { sortByDate, sortByRating } from '../utils.js';
+import { UpdateType } from '../const.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const mainElement = document.querySelector('.main');
@@ -33,7 +34,7 @@ constructor(moviesModel, comments, filters) {
   this.#moviesModel = moviesModel;
   this.#comments = [...comments];
   this.#filters = [...filters];
-  this.#moviesModel.addObserver(this.#handleModelEvent);
+  //this.#moviesModel.addObserver(this.#handleModelEvent);
 }
 
 get movies() {
@@ -47,6 +48,7 @@ get movies() {
   return this.#moviesModel.movies;
 }
 
+/*
 #handleViewAction = (updateType, update) => {
   console.log(updateType, update);
   // Здесь будем вызывать обновление модели.
@@ -61,6 +63,7 @@ get movies() {
   // - обновить список (например, когда задача ушла в архив)
   // - обновить всю доску (например, при переключении фильтра)
 }
+*/
 
 init = () => {
   this.#renderUserProfile();
@@ -108,6 +111,9 @@ init = () => {
   movies.forEach((movie) => {
     this.#cardViewComponent[counter] = new CardView(movie);
     render(filmContainerElement, this.#cardViewComponent[counter], RenderPosition.BEFOREEND);
+    this.#cardViewComponent[counter].setAddToFavoritesHandler(() => {
+      this.#moviesModel.updateMovie(UpdateType.MINOR, {...this.movie, isFavorite: !this.movie.isFavorite});
+    });
     this.#cardViewComponent[counter].setOpenPopupHandler(() => {
       if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
       this.#popupComponent = new PopupView(movie, this.#comments);
@@ -180,13 +186,6 @@ init = () => {
   const footer = document.querySelector('.footer');
   const statisticsContainerElement = footer.querySelector('.footer__statistics');
   render(statisticsContainerElement, new StatsView(this.movies), RenderPosition.BEFOREEND);
-}
-
-#handleFavoriteClick = () => {
-  this.#changeData(
-    UpdateType.MINOR,
-    {...this.#task, isFavorite: !this.#task.isFavorite},
-  );
 }
 
 }
