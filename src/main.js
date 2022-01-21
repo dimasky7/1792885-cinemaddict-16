@@ -11,7 +11,7 @@ const movies = Array.from({length: CARD_IN_LIST_COUNT}, getMovie);
 const commentsIds = [].concat(...movies.map((movie) => (movie.commentsIds)));
 //console.log(commentsIds);
 const comments = getComments(commentsIds);
-console.log(comments);
+//console.log(comments);
 const filters = getFilters(movies);
 //console.log(filters);
 
