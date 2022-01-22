@@ -75,10 +75,6 @@ export default class CardView extends SmartView {
     return createCardTemplate(this.#movie);
   }
 
-  get movie() {
-    return this.#movie;
-  }
-
   setOpenPopupHandler = (callback) => {
     this._callback.openPopup = callback;
     this.element.querySelector('.film-card__link').addEventListener('click', this.#openPopupHandler);

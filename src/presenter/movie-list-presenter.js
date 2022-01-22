@@ -49,6 +49,9 @@ get movies() {
 }
 
 /*
+Поменял данные в модели через колбэк функции setAddToFavoritesHandler. Тоже самое можно сделать и для WishList, и для isWatched.
+Короче пока что смысла в этом методе не вижу.
+
 #handleViewAction = (updateType, update) => {
   console.log(updateType, update);
   // Здесь будем вызывать обновление модели.
@@ -62,14 +65,17 @@ get movies() {
   // - обновить часть списка (например, когда поменялось описание)
   // - обновить список (например, когда задача ушла в архив)
   // - обновить всю доску (например, при переключении фильтра)
-  console.log(updateType, data);
   switch (updateType) {
-    case UpdateType.MINOR:
-      const index = this.#cardViewComponent.findIndex((cardView) => (cardView.movie.id === data.id));
-      this.#cardViewComponent[index].updateData(isFavorite: true);
-      //this.#clearMovieList();
-      //this.#renderMovieList();
+    case UpdateType.MINOR: {
+      this.#renderedMovieCount = this.#clearMovieList();
+      const renderedMovies = this.movies.slice(0, this.#renderedMovieCount);
+      this.#renderCards(renderedMovies, 0);
+      const movieCount = this.movies.length;
+      if (movieCount > this.#renderedMovieCount) {
+        this.#renderShowMoreButton();
+      }
       break;
+    }
   }
 
 }
@@ -179,6 +185,7 @@ init = () => {
 }
 
 #clearMovieList = () => {
+  const renderedMovieCount = this.#cardViewComponent.length;
   this.#cardViewComponent.forEach((cardView) => {
     remove(cardView);
   });
@@ -189,6 +196,7 @@ init = () => {
   if (document.body.classList.contains('hide-overflow')) {
     document.body.classList.remove('hide-overflow');
   }
+  return renderedMovieCount;
 }
 
 #renderStats = () => {
