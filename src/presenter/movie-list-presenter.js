@@ -65,8 +65,10 @@ get movies() {
   console.log(updateType, data);
   switch (updateType) {
     case UpdateType.MINOR:
-      this.#clearMovieList();
-      this.#renderMovieList();
+      const index = this.#cardViewComponent.findIndex((cardView) => (cardView.movie.id === data.id));
+      this.#cardViewComponent[index].updateData(isFavorite: true);
+      //this.#clearMovieList();
+      //this.#renderMovieList();
       break;
   }
 

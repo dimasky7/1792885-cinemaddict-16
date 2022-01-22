@@ -1,5 +1,5 @@
 import {START_INDEX} from '../const';
-import AbstractView from './abstract-view';
+import SmartView from './smart-view';
 
 const getCommentLength = (comments) => {
   const length = comments.length;
@@ -63,7 +63,7 @@ const createCardTemplate = (movie) => {
     </article>`;
 };
 
-export default class CardView extends AbstractView {
+export default class CardView extends SmartView {
   #movie = null;
 
   constructor(movie) {
@@ -73,6 +73,10 @@ export default class CardView extends AbstractView {
 
   get template() {
     return createCardTemplate(this.#movie);
+  }
+
+  get movie() {
+    return this.#movie;
   }
 
   setOpenPopupHandler = (callback) => {
