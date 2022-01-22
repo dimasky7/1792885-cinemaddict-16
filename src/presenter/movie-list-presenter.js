@@ -34,7 +34,7 @@ constructor(moviesModel, comments, filters) {
   this.#moviesModel = moviesModel;
   this.#comments = [...comments];
   this.#filters = [...filters];
-  //this.#moviesModel.addObserver(this.#handleModelEvent);
+  this.#moviesModel.addObserver(this.#handleModelEvent);
 }
 
 get movies() {
@@ -55,15 +55,22 @@ get movies() {
   // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
   // update - обновленные данные
 }
+*/
 
 #handleModelEvent = (updateType, data) => {
-  console.log(updateType, data);
   // В зависимости от типа изменений решаем, что делать:
   // - обновить часть списка (например, когда поменялось описание)
   // - обновить список (например, когда задача ушла в архив)
   // - обновить всю доску (например, при переключении фильтра)
+  console.log(updateType, data);
+  switch (updateType) {
+    case UpdateType.MINOR:
+      this.#clearMovieList();
+      this.#renderMovieList();
+      break;
+  }
+
 }
-*/
 
 init = () => {
   this.#renderUserProfile();
@@ -112,7 +119,7 @@ init = () => {
     this.#cardViewComponent[counter] = new CardView(movie);
     render(filmContainerElement, this.#cardViewComponent[counter], RenderPosition.BEFOREEND);
     this.#cardViewComponent[counter].setAddToFavoritesHandler(() => {
-      this.#moviesModel.updateMovie(UpdateType.MINOR, {...this.movie, isFavorite: !this.movie.isFavorite});
+      this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, isFavorite: !movie.isFavorite});
     });
     this.#cardViewComponent[counter].setOpenPopupHandler(() => {
       if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
