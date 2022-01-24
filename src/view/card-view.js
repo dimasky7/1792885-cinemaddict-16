@@ -94,4 +94,25 @@ export default class CardView extends SmartView {
     evt.preventDefault();
     this._callback.addToFavorites();
   }
+
+  setAddToWatchlistHandler = (callback) => {
+    this._callback.addToWatchlist = callback;
+    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this.#addToWatchlistHandler);
+  }
+
+  #addToWatchlistHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatchlist();
+  }
+
+  setAddToWatchedHandler = (callback) => {
+    this._callback.addToWatched = callback;
+    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#addToWatchedHandler);
+  }
+
+  #addToWatchedHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatched();
+  }
+
 }

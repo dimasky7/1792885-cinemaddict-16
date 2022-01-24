@@ -129,6 +129,12 @@ init = () => {
     this.#cardViewComponent[counter].setAddToFavoritesHandler(() => {
       this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, isFavorite: !movie.isFavorite});
     });
+    this.#cardViewComponent[counter].setAddToWatchlistHandler(() => {
+      this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, inWatchlist: !movie.inWatchlist});
+    });
+    this.#cardViewComponent[counter].setAddToWatchedHandler(() => {
+      this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, isWatched: !movie.isWatched});
+    });
     this.#cardViewComponent[counter].setOpenPopupHandler(() => {
       if (document.body.lastElementChild.hasAttribute('data-popup')) {document.body.lastElementChild.remove();}
       this.#popupComponent = new PopupView(movie, this.#comments);
