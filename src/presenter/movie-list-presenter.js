@@ -69,8 +69,30 @@ get movies() {
   switch (updateType) {
     case UpdateType.MINOR: {
       if (this.#popupComponent) {
-        this.#renderedMovieCount = this.#clearMovieListWithoutPopup();
-
+        this.#renderedMovieCount = this.#clearMovieList();
+        this.#popupComponent = new PopupView(data, this.#comments);
+        this.#popupComponent.element.setAttribute('data-popup', '');
+        document.body.appendChild(this.#popupComponent.element);
+        this.#popupComponent.setAddToFavHandler(() => {
+          this.#moviesModel.updateMovie(UpdateType.MINOR, {...data, isFavorite: !data.isFavorite});
+        });
+        this.#popupComponent.setFormSubmitHandler(() => {
+          const newComment = document.createElement('li');
+          newComment.classList.add('film-details__comment');
+          const emojiCopy = this.#popupComponent.element.querySelector('.film-details__add-emoji-label').cloneNode(true);
+          emojiCopy.classList.remove('film-details__add-emoji-label');
+          newComment.appendChild(emojiCopy);
+          const newText = document.createElement('p');
+          newText.textContent = this.#popupComponent.element.querySelector('.film-details__comment-input').value;
+          newText.classList.add('film-details__comment-text');
+          newComment.appendChild(newText);
+          this.#popupComponent.element.querySelector('.film-details__comments-list').appendChild(newComment);
+        });
+        document.body.classList.add('hide-overflow');
+        this.#popupComponent.setClosePopupHandler(() => {
+          remove(this.#popupComponent);
+          document.body.classList.remove('hide-overflow');
+        });
       } else {
         this.#renderedMovieCount = this.#clearMovieList();
       }
@@ -211,20 +233,6 @@ init = () => {
   if (document.body.classList.contains('hide-overflow')) {
     document.body.classList.remove('hide-overflow');
   }
-  return renderedMovieCount;
-}
-
-#clearMovieListWithoutPopup = () => {
-  const renderedMovieCount = this.#cardViewComponent.length;
-  this.#cardViewComponent.forEach((cardView) => {
-    remove(cardView);
-  });
-  remove(this.#showMoreButtonComponent);
-  this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
-  this.#cardViewComponent = [];
-  //if (document.body.classList.contains('hide-overflow')) {
-  //  document.body.classList.remove('hide-overflow');
-  //}
   return renderedMovieCount;
 }
 

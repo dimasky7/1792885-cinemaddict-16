@@ -13,7 +13,7 @@ const commentsIds = [].concat(...movies.map((movie) => (movie.commentsIds)));
 const comments = getComments(commentsIds);
 //console.log(comments);
 const filters = getFilters(movies);
-//console.log(filters);
+console.log(filters);
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
