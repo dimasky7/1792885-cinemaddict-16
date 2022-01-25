@@ -65,9 +65,15 @@ get movies() {
   // - обновить часть списка (например, когда поменялось описание)
   // - обновить список (например, когда задача ушла в архив)
   // - обновить всю доску (например, при переключении фильтра)
+  console.log(data);
   switch (updateType) {
     case UpdateType.MINOR: {
-      this.#renderedMovieCount = this.#clearMovieList();
+      if (this.#popupComponent) {
+        this.#renderedMovieCount = this.#clearMovieListWithoutPopup();
+
+      } else {
+        this.#renderedMovieCount = this.#clearMovieList();
+      }
       const renderedMovies = this.movies.slice(0, this.#renderedMovieCount);
       this.#renderCards(renderedMovies, 0);
       const movieCount = this.movies.length;
@@ -140,6 +146,9 @@ init = () => {
       this.#popupComponent = new PopupView(movie, this.#comments);
       this.#popupComponent.element.setAttribute('data-popup', '');
       document.body.appendChild(this.#popupComponent.element);
+      this.#popupComponent.setAddToFavHandler(() => {
+        this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, isFavorite: !movie.isFavorite});
+      });
       this.#popupComponent.setFormSubmitHandler(() => {
         const newComment = document.createElement('li');
         newComment.classList.add('film-details__comment');
@@ -202,6 +211,20 @@ init = () => {
   if (document.body.classList.contains('hide-overflow')) {
     document.body.classList.remove('hide-overflow');
   }
+  return renderedMovieCount;
+}
+
+#clearMovieListWithoutPopup = () => {
+  const renderedMovieCount = this.#cardViewComponent.length;
+  this.#cardViewComponent.forEach((cardView) => {
+    remove(cardView);
+  });
+  remove(this.#showMoreButtonComponent);
+  this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
+  this.#cardViewComponent = [];
+  //if (document.body.classList.contains('hide-overflow')) {
+  //  document.body.classList.remove('hide-overflow');
+  //}
   return renderedMovieCount;
 }
 

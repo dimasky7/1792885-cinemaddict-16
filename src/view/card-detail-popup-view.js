@@ -255,4 +255,13 @@ export default class PopupView extends SmartView {
     }
   }
 
+  setAddToFavHandler = (callback) => {
+    this._callback.addToFav = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavHandler);
+  }
+
+  #addToFavHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToFav();
+  }
 }
