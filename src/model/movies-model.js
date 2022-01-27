@@ -1,7 +1,9 @@
 import AbstractObservable from '../abstract-observable';
+import { getFilters } from '../mock/filters';
 
 export default class MoviesModel extends AbstractObservable {
     #movies = [];
+    #filters = [];
 
     set movies(movies) {
       this.#movies = [...movies];
@@ -9,6 +11,10 @@ export default class MoviesModel extends AbstractObservable {
 
     get movies() {
       return this.#movies;
+    }
+
+    get filters() {
+      return getFilters(this.#movies);
     }
 
     updateMovie = (updateType, update) => {

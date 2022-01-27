@@ -13,11 +13,14 @@ import { UpdateType } from '../const.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const mainElement = document.querySelector('.main');
+const headerElement = document.querySelector('.header');
 
 export default class MovieListPresenter {
 #sortComponent = new SortView();
 #listComponent = new ListView();
 #showMoreButtonComponent = new ShowMoreButtonView();
+#userProfileComponent = null;
+#filtersComponent = null;
 #popupComponent = null;
 #moviesModel = null;
 #renderedMovieCount = MOVIE_COUNT_PER_STEP;
@@ -25,15 +28,15 @@ export default class MovieListPresenter {
 //#sourcedMovies = [];
 #currentSortType = SortType.DEFAULT;
 #comments = [];
-#filters = [];
+//#filters = [];
 #cardViewComponent = [];
 
-constructor(moviesModel, comments, filters) {
+constructor(moviesModel, comments) {
   //this.#movies = [...movies];
   //this.#sourcedMovies = [...movies];
   this.#moviesModel = moviesModel;
   this.#comments = [...comments];
-  this.#filters = [...filters];
+  //this.#filters = [...filters];
   this.#moviesModel.addObserver(this.#handleModelEvent);
 }
 
@@ -73,8 +76,14 @@ get movies() {
         this.#popupComponent = new PopupView(data, this.#comments);
         this.#popupComponent.element.setAttribute('data-popup', '');
         document.body.appendChild(this.#popupComponent.element);
-        this.#popupComponent.setAddToFavHandler(() => {
+        this.#popupComponent.setAddToFavoritesHandler(() => {
           this.#moviesModel.updateMovie(UpdateType.MINOR, {...data, isFavorite: !data.isFavorite});
+        });
+        this.#popupComponent.setAddToWatchlistHandler(() => {
+          this.#moviesModel.updateMovie(UpdateType.MINOR, {...data, inWatchlist: !data.inWatchlist});
+        });
+        this.#popupComponent.setAddToWatchedHandler(() => {
+          this.#moviesModel.updateMovie(UpdateType.MINOR, {...data, isWatched: !data.isWatched});
         });
         this.#popupComponent.setFormSubmitHandler(() => {
           const newComment = document.createElement('li');
@@ -91,6 +100,7 @@ get movies() {
         document.body.classList.add('hide-overflow');
         this.#popupComponent.setClosePopupHandler(() => {
           remove(this.#popupComponent);
+          this.#popupComponent = null;
           document.body.classList.remove('hide-overflow');
         });
       } else {
@@ -102,6 +112,10 @@ get movies() {
       if (movieCount > this.#renderedMovieCount) {
         this.#renderShowMoreButton();
       }
+      remove(this.#filtersComponent);
+      this.#renderFilters();
+      remove(this.#userProfileComponent);
+      this.#renderUserProfile();
       break;
     }
   }
@@ -119,12 +133,13 @@ init = () => {
 
 
 #renderUserProfile = () => {
-  const headerElement = document.querySelector('.header');
-  render(headerElement, new UserProfileView(this.movies), RenderPosition.BEFOREEND);
+  this.#userProfileComponent = new UserProfileView(this.movies);
+  render(headerElement, this.#userProfileComponent, RenderPosition.BEFOREEND);
 }
 
 #renderFilters = () => {
-  render(mainElement, new FiltersView(this.#filters), RenderPosition.BEFOREEND);
+  this.#filtersComponent = new FiltersView(this.#moviesModel.filters);
+  render(mainElement, this.#filtersComponent, RenderPosition.AFTERBEGIN);
 }
 
 #handleSortTypeChange = (sortType) => {
@@ -168,8 +183,14 @@ init = () => {
       this.#popupComponent = new PopupView(movie, this.#comments);
       this.#popupComponent.element.setAttribute('data-popup', '');
       document.body.appendChild(this.#popupComponent.element);
-      this.#popupComponent.setAddToFavHandler(() => {
+      this.#popupComponent.setAddToFavoritesHandler(() => {
         this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, isFavorite: !movie.isFavorite});
+      });
+      this.#popupComponent.setAddToWatchlistHandler(() => {
+        this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, inWatchlist: !movie.inWatchlist});
+      });
+      this.#popupComponent.setAddToWatchedHandler(() => {
+        this.#moviesModel.updateMovie(UpdateType.MINOR, {...movie, isWatched: !movie.isWatched});
       });
       this.#popupComponent.setFormSubmitHandler(() => {
         const newComment = document.createElement('li');
@@ -186,6 +207,7 @@ init = () => {
       document.body.classList.add('hide-overflow');
       this.#popupComponent.setClosePopupHandler(() => {
         remove(this.#popupComponent);
+        this.#popupComponent = null;
         document.body.classList.remove('hide-overflow');
       });
     });

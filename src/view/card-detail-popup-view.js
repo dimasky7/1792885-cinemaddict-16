@@ -255,13 +255,33 @@ export default class PopupView extends SmartView {
     }
   }
 
-  setAddToFavHandler = (callback) => {
-    this._callback.addToFav = callback;
-    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavHandler);
+  setAddToFavoritesHandler = (callback) => {
+    this._callback.addToFavorites = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavoritesHandler);
   }
 
-  #addToFavHandler = (evt) => {
+  #addToFavoritesHandler = (evt) => {
     evt.preventDefault();
-    this._callback.addToFav();
+    this._callback.addToFavorites();
+  }
+
+  setAddToWatchlistHandler = (callback) => {
+    this._callback.addToWatchlist = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistHandler);
+  }
+
+  #addToWatchlistHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatchlist();
+  }
+
+  setAddToWatchedHandler = (callback) => {
+    this._callback.addToWatched = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#addToWatchedHandler);
+  }
+
+  #addToWatchedHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatched();
   }
 }

@@ -91,7 +91,7 @@ export default class CardView extends SmartView {
   }
 
   #addToFavoritesHandler = (evt) => {
-    //evt.preventDefault();
+    evt.preventDefault();
     this._callback.addToFavorites();
   }
 
