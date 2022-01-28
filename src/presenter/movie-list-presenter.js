@@ -1,4 +1,4 @@
-import {render, RenderPosition, remove} from '../render.js';
+import {render, replace, RenderPosition, remove} from '../render.js';
 import UserProfileView from '../view/user-profile-view.js';
 import FiltersView from '../view/filters-view.js';
 import SortView from '../view/sort-view.js';
@@ -16,7 +16,7 @@ const mainElement = document.querySelector('.main');
 const headerElement = document.querySelector('.header');
 
 export default class MovieListPresenter {
-#sortComponent = new SortView();
+#sortComponent = null;
 #listComponent = new ListView();
 #showMoreButtonComponent = new ShowMoreButtonView();
 #userProfileComponent = null;
@@ -151,10 +151,18 @@ init = () => {
   this.#currentSortType = sortType;
   this.#clearMovieList();
   this.#renderMovieList();
+  this.#renderSort();
 }
 
 #renderSort = () => {
-  render(mainElement, this.#sortComponent, RenderPosition.BEFOREEND);
+  const prevSortComponent = this.#sortComponent;
+  if (!prevSortComponent) {
+    this.#sortComponent = new SortView(this.#currentSortType);
+    render(mainElement, this.#sortComponent, RenderPosition.BEFOREEND);
+  } else {
+    this.#sortComponent = new SortView(this.#currentSortType);
+    replace(this.#sortComponent, prevSortComponent);
+  }
   this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
 }
 
