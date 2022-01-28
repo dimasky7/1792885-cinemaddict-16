@@ -8,7 +8,7 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import StatsView from '../view/stats-view.js';
 import PopupView from '../view/card-detail-popup-view.js';
 import { SortType } from '../const.js';
-import { sortByDate, sortByRating } from '../utils.js';
+import { sortByDate, sortByRating, filter } from '../utils.js';
 import { UpdateType } from '../const.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
@@ -27,6 +27,7 @@ export default class MovieListPresenter {
 //#movies = [];
 //#sourcedMovies = [];
 #currentSortType = SortType.DEFAULT;
+#currentFilterType = 'all';
 #comments = [];
 //#filters = [];
 #cardViewComponent = [];
@@ -41,14 +42,18 @@ constructor(moviesModel, comments) {
 }
 
 get movies() {
+
+  const movies = this.#moviesModel.movies;
+  const filteredMovies = filter[this.#currentFilterType](movies);
+
   switch (this.#currentSortType) {
     case SortType.DATE:
-      return [...this.#moviesModel.movies].sort(sortByDate);
+      return filteredMovies.sort(sortByDate);
     case SortType.RATING:
-      return [...this.#moviesModel.movies].sort(sortByRating);
+      return filteredMovies.sort(sortByRating);
   }
 
-  return this.#moviesModel.movies;
+  return filteredMovies;
 }
 
 /*
@@ -137,9 +142,25 @@ init = () => {
   render(headerElement, this.#userProfileComponent, RenderPosition.BEFOREEND);
 }
 
+#handleFilterTypeChange = (filterType) => {
+
+  if (this.#currentFilterType === filterType) {
+    return;
+  }
+
+  this.#currentFilterType = filterType;
+  this.#currentSortType = SortType.DEFAULT;
+  this.#clearMovieList();
+  this.#renderMovieList();
+  remove(this.#filtersComponent);
+  this.#renderFilters();
+  this.#renderSort();
+}
+
 #renderFilters = () => {
   this.#filtersComponent = new FiltersView(this.#moviesModel.filters);
   render(mainElement, this.#filtersComponent, RenderPosition.AFTERBEGIN);
+  this.#filtersComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 }
 
 #handleSortTypeChange = (sortType) => {

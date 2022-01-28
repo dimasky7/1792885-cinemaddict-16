@@ -13,14 +13,14 @@ const getNavigationItem = (filters) =>
     if (filter.name === 'all') {
       return `<a
                   href="#${filter.name}"
-                  class="main-navigation__item">
+                  class="main-navigation__item" data-filter-type="all">
                   ${FILTER[filter.name]}
               </a>`;
     }
 
     return `<a
                   href="#${filter.name}"
-                  class="main-navigation__item">
+                  class="main-navigation__item" data-filter-type="${filter.name}">
                   ${FILTER[filter.name]}
                   <span class="main-navigation__item-count">${filter.count}</span>
               </a>`;
@@ -49,4 +49,17 @@ export default class FiltersView extends AbstractView {
     return createFiltersTemplate(this.#filters);
   }
 
+  setFilterTypeChangeHandler = (callback) => {
+    this._callback.filterTypeChange = callback;
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+  }
+
+  #filterTypeChangeHandler = (evt) => {
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
+
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.dataset.filterType);
+  }
 }
