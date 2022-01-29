@@ -1,5 +1,5 @@
 import {START_INDEX} from '../const';
-import AbstractView from './abstract-view';
+import SmartView from './smart-view';
 
 const getCommentLength = (comments) => {
   const length = comments.length;
@@ -63,7 +63,7 @@ const createCardTemplate = (movie) => {
     </article>`;
 };
 
-export default class CardView extends AbstractView {
+export default class CardView extends SmartView {
   #movie = null;
 
   constructor(movie) {
@@ -83,6 +83,36 @@ export default class CardView extends AbstractView {
   #openPopupHandler = (evt) => {
     evt.preventDefault();
     this._callback.openPopup();
+  }
+
+  setAddToFavoritesHandler = (callback) => {
+    this._callback.addToFavorites = callback;
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#addToFavoritesHandler);
+  }
+
+  #addToFavoritesHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToFavorites();
+  }
+
+  setAddToWatchlistHandler = (callback) => {
+    this._callback.addToWatchlist = callback;
+    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this.#addToWatchlistHandler);
+  }
+
+  #addToWatchlistHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatchlist();
+  }
+
+  setAddToWatchedHandler = (callback) => {
+    this._callback.addToWatched = callback;
+    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#addToWatchedHandler);
+  }
+
+  #addToWatchedHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatched();
   }
 
 }

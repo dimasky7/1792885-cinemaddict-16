@@ -23,3 +23,11 @@ export const getText = (min, max) => {
 export const sortByRating = (movieA, movieB) => movieB.rating - movieA.rating;
 
 export const sortByDate = (movieA, movieB) => dayjs(movieB.release).diff(dayjs(movieA.release));
+
+export const filter = {
+  'all': (movies) => movies,
+  'watchlist': (movies) => movies.filter((movie) => movie.inWatchlist),
+  'history': (movies) => movies.filter((movie) => movie.isWatched),
+  'favorites': (movies) => movies.filter((movie) => movie.isFavorite),
+};
+

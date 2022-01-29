@@ -236,12 +236,10 @@ export default class PopupView extends SmartView {
 
   #emojiSelectionHandler = (evt) => {
     const addEmojiLabel = this.element.querySelector('.film-details__add-emoji-label');
-    if (!addEmojiLabel.children[0]) {
-      addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
-    } else {
+    if (addEmojiLabel.children[0]) {
       addEmojiLabel.removeChild(addEmojiLabel.children[0]);
-      addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
     }
+    addEmojiLabel.insertAdjacentHTML('beforeend', `<img src="./images/emoji/${evt.target.value}.png" width="30" height="30" alt="emoji">`);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -257,4 +255,33 @@ export default class PopupView extends SmartView {
     }
   }
 
+  setAddToFavoritesHandler = (callback) => {
+    this._callback.addToFavorites = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#addToFavoritesHandler);
+  }
+
+  #addToFavoritesHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToFavorites();
+  }
+
+  setAddToWatchlistHandler = (callback) => {
+    this._callback.addToWatchlist = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#addToWatchlistHandler);
+  }
+
+  #addToWatchlistHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatchlist();
+  }
+
+  setAddToWatchedHandler = (callback) => {
+    this._callback.addToWatched = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#addToWatchedHandler);
+  }
+
+  #addToWatchedHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.addToWatched();
+  }
 }

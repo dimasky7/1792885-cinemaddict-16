@@ -19,3 +19,9 @@ export const SortType = {
   DATE: 'date',
   RATING: 'rating',
 };
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
