@@ -48,9 +48,11 @@ get movies() {
 
   switch (this.#currentSortType) {
     case SortType.DATE:
-      return filteredMovies.sort(sortByDate);
+      return [...filteredMovies].sort(sortByDate);
     case SortType.RATING:
-      return filteredMovies.sort(sortByRating);
+      return [...filteredMovies].sort(sortByRating);
+    //case SortType.DEFAULT:
+      //return filteredMovies;
   }
 
   return filteredMovies;
