@@ -24,20 +24,14 @@ export default class MovieListPresenter {
 #popupComponent = null;
 #moviesModel = null;
 #renderedMovieCount = MOVIE_COUNT_PER_STEP;
-//#movies = [];
-//#sourcedMovies = [];
 #currentSortType = SortType.DEFAULT;
 #currentFilterType = 'all';
 #comments = [];
-//#filters = [];
 #cardViewComponent = [];
 
 constructor(moviesModel, comments) {
-  //this.#movies = [...movies];
-  //this.#sourcedMovies = [...movies];
   this.#moviesModel = moviesModel;
   this.#comments = [...comments];
-  //this.#filters = [...filters];
   this.#moviesModel.addObserver(this.#handleModelEvent);
 }
 
@@ -51,8 +45,6 @@ get movies() {
       return [...filteredMovies].sort(sortByDate);
     case SortType.RATING:
       return [...filteredMovies].sort(sortByRating);
-    //case SortType.DEFAULT:
-      //return filteredMovies;
   }
 
   return filteredMovies;
@@ -75,7 +67,6 @@ get movies() {
   // - обновить часть списка (например, когда поменялось описание)
   // - обновить список (например, когда задача ушла в архив)
   // - обновить всю доску (например, при переключении фильтра)
-  console.log(data);
   switch (updateType) {
     case UpdateType.MINOR: {
       if (this.#popupComponent) {
@@ -113,7 +104,12 @@ get movies() {
       } else {
         this.#renderedMovieCount = this.#clearMovieList();
       }
+
+      if (this.movies.length - this.#renderedMovieCount === 1 ) {
+        this.#renderedMovieCount++;
+      }
       const renderedMovies = this.movies.slice(0, this.#renderedMovieCount);
+
       this.#renderCards(renderedMovies, 0);
       const movieCount = this.movies.length;
       if (movieCount > this.#renderedMovieCount) {

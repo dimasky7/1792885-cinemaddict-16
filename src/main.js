@@ -12,11 +12,11 @@ const commentsIds = [].concat(...movies.map((movie) => (movie.commentsIds)));
 //console.log(commentsIds);
 const comments = getComments(commentsIds);
 //console.log(comments);
-const filters = getFilters(movies);
-console.log(filters);
+//const filters = getFilters(movies);
+//console.log(filters);
 
 const moviesModel = new MoviesModel();
 moviesModel.movies = movies;
 
-const Presenter = new MovieListPresenter(moviesModel, comments, filters);
+const Presenter = new MovieListPresenter(moviesModel, comments);
 Presenter.init();
